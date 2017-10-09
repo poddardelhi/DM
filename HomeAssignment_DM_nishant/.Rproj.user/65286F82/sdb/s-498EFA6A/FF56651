@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(readxl)\n#data1 <-data.frame(read.csv(\"/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_1.csv\",sep = \",\",header = FALSE))\n\n#data1\ndata1 <-data.frame(read.csv(\"/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_1.csv\",sep = \",\",header = FALSE))\nindexes1 = sample(1:nrow(data1), size=0.3*nrow(data1))\n# Split data1\ntest1 = data1[indexes1,]\ndim(test)  # 30 2\ntrain1= data1[-indexes1,]\ndim(train1) # 70 2\n\n#data2\ndata2 <-data.frame(read.csv(\"/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_2.csv\",sep = \",\",header = FALSE))\nindexes2 = sample(1:nrow(data2), size=0.3*nrow(data2))\n# Split data2\ntest2 = data2[indexes2,]\ntrain2= data2[-indexes2,]\n#Data3\ndata3 <-data.frame(read.csv(\"/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_3.csv\",sep = \",\",header = FALSE))\nindexes3 = sample(1:nrow(data3), size=0.3*nrow(data3))\n# Split data3\ntest3 = data3[indexes3,]\ntrain3= data3[-indexes3,] # extracting all elements except \"indexes3\"\n\n#Data4\ndata4 <-data.frame(read.csv(\"/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_4.csv\",sep = \",\",header = FALSE))\nindexes4 = sample(1:nrow(data4), size=0.3*nrow(data4))\n# Split data4\ntest4 = data4[indexes4,]\ntrain4= data4[-indexes4,]\n\n#joining all the test data and training data\nset.seed(3)\ntest<-rbind(test1,test2,test3,test4)\nhead(test)\nset.seed(3)\ntrain <- rbind(train1,train2,train3,train4)\nhead(train)\nsummary(test)\nsummary(train)\n\n\n\n# Euclidean Distance function \n\neuclideanDist<- function(a,b){\n  dist=0\n  for(i in c(1:(length(a)-1))){\n    \n    dist<-dist + (a[i]-b[i])^2\n  }\n  dist<-sqrt(dist)\n  return(dist)\n  \n}\n\n\n#Knn- function \nknn<-function(test,train,k_value){\n  if(ncol(test)!= ncol(train)){\n    stop(\"Training Data and Test Data must be have equal number of columns\")\n  }\n  else{\n    for (i in c(1:nrow(test))){\n      pred<-c()\n      euc_dist=c()\n      euc_char=c()\n      good=0\n      bad=0\n      for (j in c(1:nrow(train))){\n        #computing Euclidean distance b/w test data and trainning data\n        \n        #appending the Euclidean distance to euc_dist vector\n        eu_dist<- c(euc_dist,euclideanDist(test[i,],train[j,])) \n        #adding clss of training data in euc_char\n        euc_char<-c(euc_char,as.character(train[j,][[3]]))\n      }\n      eu<- data.frame(euc_char,euc_dist)\n      eu<- eu[order(eu$euc_dist),]\n      eu<- eu[1:k_value,]\n      \n      #loop over eu and counts teh classes of neighbor \n      \n    for (k in c(1:nrow(eu))){\n      if(as.character(eu[k,\"euc_char\"])==\"g\"){\n        good=good+1\n      }\n      else{\n        bad=bad+1\n      }\n      #comparing the neighbor with class \"good\" or \"bad\"\n      if(good>bad){\n        pred<-c(pred,\"g\")\n      }\n      else if(good<bad){\n        pred<-c(pred,\"b\")\n      }\n    }\n      return (pred)\n      \n    }\n    }\n  }\n\n\n#Accuracy Calculation \naccuracy<- function(test){\n  correct=0\n  for(i in c(1:nrow(test))){\n    if(test[i,3]== test[i,4]){\n      correct=correct+1\n    }\n  }\n  acc= correct/nrow(test) *100\n  return(acc)\n}\n\n\n\nK = 5\npredictions <- knn(test,train,K) #calling knn_predict()\n\n#test.df[,7] <- predictions #Adding predictions in test data as 7th column\n#print(accuracy(test.df))\n\n    \n\n\n\n",
+    "created" : 1507465033154.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "604243921",
+    "id" : "FF56651",
+    "lastKnownWriteTime" : 1507583421,
+    "last_content_update" : 1507583421073,
+    "path" : "~/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/problem2.R",
+    "project_path" : "problem2.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

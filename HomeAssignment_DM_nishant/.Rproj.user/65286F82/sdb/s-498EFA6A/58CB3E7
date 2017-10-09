@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "require(gdata)\n\ndata1=read.xls(\"LungCapData.xls\",sheet = 1,header=T)\nhead(data1)\ndata1[c(5:9), ]\n\nmean(data1$Age) \nattach(data1)\ndetach(data1)\nsummary(data1)\ndim(data1)\nattach(data1)\nlevels(Gender)\nmean(Age[Gender==\"male\"])\n\ndata1[]\n\nfemData = data1 [Gender== \"female\", ]\ndim(femData)\nmaleData<- data1 [Gender==\"male\",]\n\nsum <- function(x ,y){\n  return (x+y)\n}\n\nsum(1,2)\n\nknn.df\n\nx <- 1:6\n\nfor(i in seq_along(x)){\n  print(x[i])\n}\n\n\n\n\n\n\n\nknn_predict <- function(test_data, train_data, k_value){\n  pred <- c()  #empty pred vector \n  #LOOP-1\n  for(i in c(1:nrow(test_data))){   #looping over each record of test data\n    eu_dist =c()          #eu_dist & eu_char empty  vector\n    eu_char = c()\n    good = 0              #good & bad variable initialization with 0 value\n    bad = 0\n    \n    #LOOP-2-looping over train data \n    for(j in c(1:nrow(train_data))){\n      \n      #adding euclidean distance b/w test data point and train data to eu_dist vector\n      eu_dist <- c(eu_dist, euclideanDist(test_data[i,], train_data[j,]))\n      \n      #adding class variable of training data in eu_char\n      eu_char <- c(eu_char, as.character(train_data[j,][[6]]))\n    }\n    \n    eu <- data.frame(eu_char, eu_dist) #eu dataframe created with eu_char & eu_dist columns\n    \n    eu <- eu[order(eu$eu_dist),]       #sorting eu dataframe to gettop K neighbors\n    eu <- eu[1:k_value,]               #eu dataframe with top K neighbors\n    \n    #Loop 3: loops over eu and counts classes of neibhors.\n    for(k in c(1:nrow(eu))){\n      if(as.character(eu[k,\"eu_char\"]) == \"g\"){\n        good = good + 1\n      }\n      else\n        bad = bad + 1\n    }\n    \n    # Compares the no. of neighbors with class label good or bad\n    if(good > bad){          #if majority of neighbors are good then put \"g\" in pred vector\n      \n      pred <- c(pred, \"g\")\n    }\n    else if(good < bad){\n      #if majority of neighbors are bad then put \"b\" in pred vector\n      pred <- c(pred, \"b\")\n    }\n    \n  }\n  return(pred) #return pred vector\n}\n\n\n\nn = c(2, 3, 5) \n s = c(\"aa\", \"bb\", \"cc\") \n b = c(TRUE, FALSE, TRUE) \n df = data.frame(n, s, b)\n df\n \ndummy <- c(\"k\", \"g\")\ndummy <- c(dummy,\"h\")",
+    "created" : 1507469249838.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "648772726",
+    "id" : "58CB3E7",
+    "lastKnownWriteTime" : 1507506112,
+    "last_content_update" : 1507577600365,
+    "path" : "~/3rd_sem/DataMining/r_practice/MarinStatLec_Youtube/lecture1.r",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
