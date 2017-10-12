@@ -1,3 +1,4 @@
+
 mydistfun<- function(element1,element2,metricf){
   # this function returns the distace between the element1 and element2
   # according to the metricf
@@ -45,12 +46,12 @@ mydistfun<- function(element1,element2,metricf){
       }
       dist<- (colSums(sqd)^(1/4))
     }
-    else(p==5){
+    else(p==5)
       for (i in seq_along(element1)){
         sqd[i]<- (abs(element1[i]-element2[i]))^5
       }
       dist<- (colSums(sqd)^(1/5))
-    }
+    
   }
   #canberra
   if (metricf=="canberra"){
@@ -63,4 +64,6 @@ mydistfun<- function(element1,element2,metricf){
    return(dist)
 }
 
-  
+element1<-matrix(rexp(200, rate=.1), ncol=2)
+element2<-matrix(rexp(200, rate=.1), ncol=2)
+mydistfun(element1,element2,"eucledean")

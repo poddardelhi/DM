@@ -6,7 +6,7 @@ data1 <-data.frame(read.csv("/home/nishant/3rd_sem/DataMining/Home Assignment/Ho
 indexes1 = sample(1:nrow(data1), size=0.3*nrow(data1))
 # Split data1
 test1 = data1[indexes1,]
-dim(test)  # 30 2
+dim(test1)  # 30 2
 train1= data1[-indexes1,]
 dim(train1) # 70 2
 
@@ -26,6 +26,7 @@ train3= data3[-indexes3,] # extracting all elements except "indexes3"
 #Data4
 data4 <-data.frame(read.csv("/home/nishant/3rd_sem/DataMining/Home Assignment/HomeAssignment_DM_nishant/dataset/student_9classification_set_4.csv",sep = ",",header = FALSE))
 indexes4 = sample(1:nrow(data4), size=0.3*nrow(data4))
+
 # Split data4
 test4 = data4[indexes4,]
 train4= data4[-indexes4,]
@@ -39,9 +40,6 @@ train <- rbind(train1,train2,train3,train4)
 head(train)
 summary(test)
 summary(train)
-
-
-
 # Euclidean Distance function 
 
 euclideanDist<- function(a,b){
@@ -52,58 +50,7 @@ euclideanDist<- function(a,b){
   }
   dist<-sqrt(dist)
   return(dist)
-  
 }
-
-
-#Knn- function 
-knn<-function(test,train,k_value){
-  if(ncol(test)!= ncol(train)){
-    stop("Training Data and Test Data must be have equal number of columns")
-  }
-  else{
-    for (i in c(1:nrow(test))){
-      pred<-c()
-      euc_dist=c()
-      euc_char=c()
-      good=0
-      bad=0
-      for (j in c(1:nrow(train))){
-        #computing Euclidean distance b/w test data and trainning data
-        
-        #appending the Euclidean distance to euc_dist vector
-        eu_dist<- c(euc_dist,euclideanDist(test[i,],train[j,])) 
-        #adding clss of training data in euc_char
-        euc_char<-c(euc_char,as.character(train[j,][[3]]))
-      }
-      eu<- data.frame(euc_char,euc_dist)
-      eu<- eu[order(eu$euc_dist),]
-      eu<- eu[1:k_value,]
-      
-      #loop over eu and counts teh classes of neighbor 
-      
-    for (k in c(1:nrow(eu))){
-      if(as.character(eu[k,"euc_char"])=="g"){
-        good=good+1
-      }
-      else{
-        bad=bad+1
-      }
-      #comparing the neighbor with class "good" or "bad"
-      if(good>bad){
-        pred<-c(pred,"g")
-      }
-      else if(good<bad){
-        pred<-c(pred,"b")
-      }
-    }
-      return (pred)
-      
-    }
-    }
-  }
-
-
 #Accuracy Calculation 
 accuracy<- function(test){
   correct=0
@@ -116,13 +63,68 @@ accuracy<- function(test){
   return(acc)
 }
 
+#Knn- function 
+knn<-function(test,train,k_value){
+  pred<-c()
+  for (i in c(1:nrow(test))){
+    euc_dist=c()
+    euc_char=c()
+    classA=0
+    classB=0
+    classC=0
+    classD=0
+    for (j in c(1:nrow(train))){
+      #computing Euclidean distance b/w test data and trainning data
+      #appending the Euclidean distance to euc_dist vector
+      euc_dist<- c(euc_dist,euclideanDist(test[i,],train[j,])) 
+      #adding class of training data in euc_char
+      euc_char<-c(euc_char,as.character(train[j,][[3]]))
+    }
+    eu<- data.frame(euc_char,euc_dist)
+    eu<- eu[order(eu$euc_dist),]
+    eu<- eu[1:k_value,]
+    
+    #loop over eu and counts teh classes of neighbor 
+    
+    for (k in c(1:nrow(eu))){
+      if(as.character(eu[k,"euc_char"])=="a"){
+        classA=classA+1
+      }
+      else if(as.character(eu[k,"euc_char"])=="b"){
+        classB=classB+1
+      }
+      else if (as.character(eu[k,"euc_char"])=="c"){
+        classC=classC+1
+      }
+      else (as.character(eu[k,"euc_char"])=="d")
+      classD=classD+1
+      
+    }
+    
+    #maxClass=max(classA,classB,classC,classD)
+    #comparing the neighbor with class "good" or "bad"
+if((classA>classB) && (classA>classC)&&(classA>classD)){
+      pred<-c(pred,"a")
+    }
+    else if((classB>classA)&&(classB>classC) &&(classC>classD)){
+      pred<-c(pred,"b")
+    }
+    else if((classC>classB)&&(classC>classA)&&(classC>classD)){
+      pred<-c(pred,"c")
+    }
+    else ((classD > classB) &&(classD>classC)&&(classD>classA))
+    pred<-c(pred,"d")
+  }
+  return(pred)
+}
+
+  K = 10
+predictions <- knn(test,train,K)  #calling knn_predict()
 
 
-K = 5
-predictions <- knn(test,train,K) #calling knn_predict()
+test[,4] <- predictions #Ading predictions in test data as 4th column
 
-#test.df[,7] <- predictions #Adding predictions in test data as 7th column
-#print(accuracy(test.df))
+print(accuracy(test))
 
     
 
